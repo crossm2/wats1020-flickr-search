@@ -1,46 +1,66 @@
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
-
-/* Enable these styles if you wish to go into a grid layout.
-ul#images li {
-    width: 120px;
-    height: auto;
-    display: inline-block;
-    position: relative;
-    float: left;
+#images {
+	list-style: none;
+	font-size: 0;
+	margin-left: -2.5%; 
+}
+#images li {
+	display: inline-block;
+	padding: 10px;
+	margin: 0 0 2.5% 2.5%;
+	background: #fff;
+	border: 1px solid #ddd;
+	font-size: 16px;
+	font-size: 1rem;
+	vertical-align: top;
+	box-shadow: 0 0 5px #ddd;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+#images li img {
+	max-width: 100%;
+	height: auto;
+	margin: 0 0 10px;
+}
+#images li h1 {
+	margin: 0 0 5px;
+}
+#images li p {
+	font-size: .9em;
+	line-height: 1.5em;
+	color: #999;
 }
 
-ul#images li img {
-    display: inline-block;
-    width: 100%;
-    height: auto;
-}
 
-ul#images li button {
-    display: inline-block;
+#images li {
+	width: 22.5%; 
 }
-
---- End of grid layout styles. */
-
-ul#images {
-    list-style-type: none;
+ 
+@media (max-width: 480px) {
+	#images li {
+		display: block;
+		margin: 0 0 5px;
+	}
+	#images li a {
+		display: block;
+	}
+	#images {
+		margin-left: 0;
+	}
+	#images li {
+		width: 100%;
+		margin: 0 0 20px;
+	}
 }
-
-ul#images .placeholder {
-    font-size: 2em;
-    font-weight: lighter;
-    color: #666;
-    width: 100%;
-    margin: 2em;
+.btn-enlarge {
+	display: block;
+	margin-bottom: 2px;
 }
-.modal-body img {
-    width: 100%;
-    height: auto;
-}
-
-hr {
-    clear:both;
+.btn-primary, .btn-primary:hover, .btn-primary:focus {
+	background-color: purple;
 }
 
 

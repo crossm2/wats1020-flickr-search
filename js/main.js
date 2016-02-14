@@ -1,49 +1,90 @@
-// Asynchronous Flickr Search
-//
-// Flickr reveals a searchable JSON Feed you can access via jQuery's $.getJSON()
-// method. Use this to allow users to search for a tag or comma-separated list
-// of tags and view the images that are found.
-//
-// Allow users to click the images to see a larger version with more information.
+
+
+// Flickr Public Feeds and $.getJSON() Search Assignment 
+
 $(document).on('ready', function(){
-    // Place your code here, inside the document ready handler.
+	//search for images
+  var searchImages = function(tags) {
+    var flickrAPI = "http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
+    console.log(tags);
+    $('#images').innerHTML = '<li class="search-throbber">Searching...</li>';
+    $.getJSON( flickrAPI, {
+      tags: tags,
+      tagmode: "any",
+      format: "json"
+	//display images
+    }).done(function( data ) {
+      $('#images').empty();
+      $('h1.search-title').first()[0].innerHTML = "Search for: " + tags;
+      $.each( data.items, function( i, item ) {
+        var newListItem = $("<li>")
+        // Provide details about each image
+        var newTitle = $('<p class="image-title">').html(item.title).appendTo(newListItem);
+        var newDate = $('<p class="image-date">').text(item.date_taken).appendTo(newListItem);
+        var newDescription = $('<p class="image-description">').html(item.description).appendTo(newListItem);
+        var newLink = $('<a>').attr('href', item.link).text('View on Flickr.').appendTo(newListItem);
 
-    // Create a function called `searchImages()`. This function will handle the
-    // process of taking a user's search terms and sending them to Flickr for a
-    // response.
+        // Create button for enlarge modal
+        var newButton = $("<button class='btn btn-sm btn-primary btn-enlarge'>enlarge</button>").attr({
+          'data-title': item.title,
+          'data-toggle': "modal",
+          'data-target': "#infoModal",
+          'data-imgsrc': item.media.m,
+          'data-description': item.description,
+          'type': "button" 
+        }).appendTo(newListItem);
+		  var infoButton = $("<button class='btn btn-sm btn-primary'>More Info</button>").attr({
+		  'data-title': item.title,
+          'data-toggle': "modal",
+          'data-target': "#infoModal",
+		  'data-author': item.author,
+		  'data-date_taken': item.date_taken,
+		  'data-tags': item.tags,
+          'type': "button"  
+		  }).appendTo(newListItem);
+        newListItem.appendTo( "#images" );
+		  //limit results that come back
+        if ( i === 20 ) {
+          return false;
+        }
+		  
+      });
+    });
+  };
+	//event that triggers the new search, On Click
 
-    // Inside the `searchImages()` function, the following things should happen:
+  $('button.search').on('click', function(event){
+    event.preventDefault();
+    var searchTextInput = $(event.target.parentElement).find('input[name="searchText"]')[0];
+    console.log(searchTextInput);
+    searchImages(searchTextInput.value);
+  });
 
-        // 1.   Accept a string value called `tags` as an argument. Example:
-        //      `var searchPhotos = function(tags){`
-        //
-        // 2.   Define the location of the Flickr API like this:
-        //      `var flickrAPI = "http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";`
-        //
-        // 3.   Construct a `$.getJSON()` call where you send a request object
-        //      including the tags the user submitted, and a `done()` handler
-        //      that displays and refreshes the content appropriately.
-        //
-        // 4.   Update the display to add the images to the list with the id
-        //      `#images`.
+	//trigger modal 
+  $('#infoModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); 
+    var title = button.data('title'); 
+    var imgSrc = button.data('imgsrc');
+	var author = button.data('author') || '';
+	var tags = button.data('tags') || '';
+	var date_taken = button.data('date_taken') || '';
+    var imageDescription = button.data('description');
 
-    // Attach an event to the search button (`button.search`) to execute the
-    // search when clicked.
+    // Update modal content
+    var modal = $(this);
+    modal.find('.modal-title').html(title);
+	modal.find('.modal-author').html(author);
+	modal.find('.modal-tags').html(tags);
+	modal.find('.modal-date_taken').html(date_taken);
+    var modalBody = modal.find('.modal-body');
+    modalBody.empty();
+	  
+    var modalDescription = $("<p class='image-description'>").html(imageDescription).appendTo(modalBody);
+  });
 
-        // When the Search button is clicked, the following should happen:
-        //
-        // 1.   Prevent the default event execution so the browser doesn't
-        //      Example: `event.preventDefault();`
-        //
-        // 2.   Get the value of the 'input[name="searchText"]' and use that
-        //      as the `tags` value you send to `searchImages()`.
-        //
-        // 3.   Execute the `searchImages()` function to fetch images for the
-        //      user.
+});
+
 
     // STRETCH GOAL: Add a "more info" popup using the technique shown on the
     // Bootstrap Modal documentation: http://getbootstrap.com/javascript/#modals-related-target
 
-
-
-});
